@@ -12,6 +12,7 @@ Sitio estático, sin dependencias ni proceso de compilación. Las únicas fuente
 las tipografías de Google Fonts.
 
 ## Publicar
+**🌐 En vivo:** [https://[FinochioAdrian.github.io//](https://FinochioAdrian.github.io/)
 
 Es un sitio de usuario de GitHub Pages: el repositorio se llama `FinochioAdrian.github.io`
 y se publica solo desde la rama `main`, en la raíz. Ver `PASOS.md`.
