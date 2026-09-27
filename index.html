@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adrián Finochio — Analista de Sistemas</title>
+<meta name="description" content="Analista de Sistemas y analista funcional. Relevamiento de circuitos administrativos y dirección de su automatización.">
+<meta name="author" content="Adrián Finochio">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+</head>
+<body>
+<style>
+:root{
+  --ground:#E9ECEA; --surface:#FFFFFF; --surface-2:#DFE4E2; --surface-3:#F3F5F4;
+  --ink:#131F1E; --ink-2:#3C4B49; --muted:#6C7A78;
+  --line:#C6CFCC; --line-2:#A6B3B0;
+  --accent:#0E5B62; --accent-ink:#0A444A; --accent-soft:#D9E8E9;
+  --ok:#1B6B4C; --ok-soft:#D6E8DF;
+  --piloto:#8A6A1F; --piloto-soft:#EFE7D1;
+  --base:#3F5480; --base-soft:#DCE3EF;
+  --r:4px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0C1414; --surface:#131E1E; --surface-2:#1B2A29; --surface-3:#182524;
+    --ink:#DFE7E5; --ink-2:#AEBCBA; --muted:#7C8A88;
+    --line:#263736; --line-2:#3B5250;
+    --accent:#5FB6BE; --accent-ink:#93D3D9; --accent-soft:#10353A;
+    --ok:#6CBE9A; --ok-soft:#12301F;
+    --piloto:#D2B25E; --piloto-soft:#302810;
+    --base:#93A9D6; --base-soft:#182238;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0C1414; --surface:#131E1E; --surface-2:#1B2A29; --surface-3:#182524;
+  --ink:#DFE7E5; --ink-2:#AEBCBA; --muted:#7C8A88;
+  --line:#263736; --line-2:#3B5250;
+  --accent:#5FB6BE; --accent-ink:#93D3D9; --accent-soft:#10353A;
+  --ok:#6CBE9A; --ok-soft:#12301F;
+  --piloto:#D2B25E; --piloto-soft:#302810;
+  --base:#93A9D6; --base-soft:#182238;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Public Sans",ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+h1,h2,h3,.display{font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+
+/* ===================== ESTRUCTURA LATERAL ===================== */
+#progreso{position:fixed;left:0;top:0;height:2px;width:0;background:var(--accent);z-index:60;
+  transition:width .12s linear}
+.marco{display:grid;grid-template-columns:23rem minmax(0,1fr);max-width:92rem;margin:0 auto}
+.riel{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+  padding:3.25rem 2.5rem 2.25rem;border-right:1px solid var(--line);background:var(--ground);
+  overflow-y:auto}
+.flujo{min-width:0;padding:0 4rem}
+@media (max-width:64rem){
+  .marco{grid-template-columns:1fr}
+  .riel{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);
+    padding:2.5rem 1.75rem 1.75rem}
+  .flujo{padding:0 1.75rem}
+}
+
+/* ===================== RIEL ===================== */
+.riel-nombre{font-family:"Archivo",sans-serif;font-weight:700;font-size:2.125rem;line-height:1.02;
+  letter-spacing:-.035em;margin:0 0 .6rem}
+.riel-rol{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 .35rem;line-height:1.7}
+.riel-lugar{font-size:.875rem;color:var(--muted);margin:0 0 2rem}
+.riel-frase{font-size:.9375rem;color:var(--ink-2);line-height:1.55;margin:0 0 2rem;
+  padding-left:.85rem;border-left:2px solid var(--line-2)}
+.indice{margin:0 0 auto;padding:0;list-style:none;display:flex;flex-direction:column;gap:.1rem;
+  counter-reset:s}
+.indice a{counter-increment:s;display:grid;grid-template-columns:1.9rem 1fr;align-items:baseline;
+  gap:.35rem;padding:.42rem .6rem;text-decoration:none;color:var(--muted);font-size:.9375rem;
+  border-left:2px solid transparent;border-radius:0 2px 2px 0;
+  transition:color .25s ease,border-color .25s ease,background .25s ease,padding-left .25s ease}
+.indice a::before{content:"0" counter(s);font-family:"IBM Plex Mono",monospace;font-size:.6875rem;
+  color:var(--line-2);transition:color .25s ease}
+.indice a:hover{color:var(--ink);background:var(--surface);padding-left:.85rem}
+.indice a.activo{color:var(--ink);font-weight:600;border-left-color:var(--accent);background:var(--surface)}
+.indice a.activo::before{color:var(--accent)}
+.riel-pie{margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:.45rem}
+.riel-pie a{font-size:.8125rem;color:var(--ink-2);text-decoration:none;display:flex;gap:.6rem;
+  align-items:baseline;transition:color .2s ease,transform .2s ease}
+.riel-pie a:hover{color:var(--accent-ink);transform:translateX(3px)}
+.riel-pie .et{font-family:"IBM Plex Mono",monospace;font-size:.5938rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);min-width:4.5rem;flex:none}
+.tema{margin-top:1.25rem;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
+  font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;background:transparent;
+  color:var(--muted);border:1px solid var(--line);border-radius:2px;padding:.35rem .6rem;
+  cursor:pointer;line-height:1;transition:color .2s ease,border-color .2s ease}
+.tema:hover{color:var(--ink);border-color:var(--line-2)}
+.tema::before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
+  margin-right:.45rem;vertical-align:-.05em;box-sizing:border-box;border:1px solid var(--line-2);
+  background:linear-gradient(90deg,var(--ground) 50%,var(--ink) 50%)}
+
+/* ===================== SECCIONES ===================== */
+.flujo section{padding:5rem 0;border-bottom:1px solid var(--line);scroll-margin-top:1rem}
+.flujo section:last-of-type{border-bottom:0;padding-bottom:6rem}
+.rotulo{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 .6rem}
+h2{font-weight:600;font-size:clamp(1.5rem,2.6vw,2.125rem);line-height:1.12;letter-spacing:-.024em;
+  margin:0 0 1.1rem;text-wrap:balance;max-width:24ch}
+.bajada{color:var(--ink-2);max-width:62ch;margin:0 0 2rem;font-size:1.0625rem}
+p{margin:0 0 1rem}
+.prosa p{color:var(--ink-2);max-width:62ch;font-size:1.0625rem}
+.prosa p b{color:var(--ink);font-weight:600}
+
+/* ---- cifras ---- */
+.marcador{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));
+  border-top:2px solid var(--ink);border-bottom:1px solid var(--line);margin-top:2.25rem}
+.cifra{padding:.95rem 1.1rem .9rem;border-right:1px solid var(--line)}
+.cifra:last-child{border-right:0}
+.cifra b{display:block;font-family:"Archivo",sans-serif;font-weight:700;font-size:1.75rem;
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.cifra span{display:block;font-family:"IBM Plex Mono",monospace;font-size:.5938rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);margin-top:.4rem;line-height:1.4}
+
+/* ---- trayectoria ---- */
+.dos{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:3rem;align-items:start}
+@media (max-width:72rem){.dos{grid-template-columns:1fr;gap:2.25rem}}
+.traza{display:flex;flex-direction:column;border-left:2px solid var(--line);margin:0;padding:0;list-style:none}
+.hito{position:relative;padding:0 0 2.25rem 1.85rem}
+.hito:last-child{padding-bottom:0}
+.hito::before{content:"";position:absolute;left:-.4375rem;top:.5rem;width:.75rem;height:.75rem;
+  border-radius:50%;background:var(--ground);border:2px solid var(--line-2);
+  transition:background .3s ease,border-color .3s ease,transform .3s ease}
+.hito.actual::before{background:var(--accent);border-color:var(--accent)}
+.hito:hover::before{transform:scale(1.25)}
+.hito-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1rem;margin-bottom:.1rem}
+.hito-rol{font-family:"Archivo",sans-serif;font-weight:600;font-size:1.0625rem;letter-spacing:-.012em}
+.hito-fecha{font-family:"IBM Plex Mono",monospace;font-size:.6563rem;letter-spacing:.06em;
+  color:var(--muted);margin-left:auto;white-space:nowrap}
+.hito-org{font-size:.9375rem;color:var(--accent-ink);margin:0 0 .6rem;font-weight:500}
+.hito ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.hito li{position:relative;padding-left:1rem;font-size:.9375rem;color:var(--ink-2);line-height:1.5}
+.hito li::before{content:"";position:absolute;left:0;top:.66em;width:.375rem;height:1px;background:var(--line-2)}
+.hito li b{color:var(--ink);font-weight:600}
+.ficha{display:flex;flex-direction:column;border-top:2px solid var(--ink)}
+.ficha-fila{padding:.8rem 0;border-bottom:1px solid var(--line)}
+.ficha-fila:last-child{border-bottom:0}
+.ficha-fila .t{font-weight:600;font-size:.9375rem;line-height:1.3}
+.ficha-fila .o{font-size:.875rem;color:var(--ink-2)}
+.ficha-fila .f{font-family:"IBM Plex Mono",monospace;font-size:.625rem;color:var(--muted);
+  letter-spacing:.05em;margin-top:.15rem}
+
+/* ---- reparto ---- */
+.reparto{display:grid;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.mitad{padding:1.3rem 1.4rem 1.45rem}
+.mitad.yo{border-right:1px solid var(--line);border-top:3px solid var(--accent)}
+.mitad.ia{border-top:3px solid var(--line-2);background:var(--surface-3)}
+@media (max-width:41rem){.mitad.yo{border-right:0;border-bottom:1px solid var(--line)}}
+.mitad-t{font-family:"IBM Plex Mono",monospace;font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 .85rem}
+.mitad.yo .mitad-t{color:var(--accent)}
+.mitad ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.mitad li{position:relative;padding-left:1.05rem;font-size:.9375rem;color:var(--ink-2);line-height:1.45}
+.mitad li::before{content:"";position:absolute;left:0;top:.62em;width:.4rem;height:1px;background:var(--line-2)}
+.mitad.yo li{color:var(--ink)}
+
+/* ---- competencias ---- */
+.comp{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:0;
+  border-top:2px solid var(--ink);margin:0}
+.comp>div{padding:.95rem 1.1rem .95rem 0;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.comp>div:nth-child(even){padding-left:1.1rem}
+.comp dt{font-family:"IBM Plex Mono",monospace;font-size:.625rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:.3rem}
+.comp dd{margin:0;font-size:.9375rem;color:var(--ink-2);line-height:1.5}
+
+/* ---- sistemas ---- */
+.lista-sis{border-top:2px solid var(--ink);margin-bottom:1.9rem}
+.fila{display:grid;grid-template-columns:minmax(0,14rem) minmax(0,1fr) auto;gap:.35rem 1.5rem;
+  padding:.9rem .6rem .9rem 0;border-bottom:1px solid var(--line);align-items:baseline;
+  position:relative;transition:padding-left .3s ease,background .3s ease}
+.fila::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);
+  transform:scaleY(0);transform-origin:top;transition:transform .3s ease}
+.fila:hover{padding-left:.85rem;background:var(--surface)}
+.fila:hover::after{transform:scaleY(1)}
+@media (max-width:56rem){.fila{grid-template-columns:minmax(0,1fr) auto}
+  .fila .que{grid-column:1 / -1}}
+.nom{font-weight:600;font-size:.9375rem;line-height:1.3}
+.que{font-size:.875rem;color:var(--ink-2);line-height:1.45}
+.est{font-family:"IBM Plex Mono",monospace;font-size:.5938rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:.22rem .45rem;border-radius:2px;white-space:nowrap;justify-self:end}
+.est.ok{background:var(--ok-soft);color:var(--ok)}
+.est.piloto{background:var(--piloto-soft);color:var(--piloto)}
+.est.base{background:var(--base-soft);color:var(--base)}
+.boton{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.6875rem;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;background:var(--ink);
+  color:var(--ground);padding:.8rem 1.25rem;border-radius:2px;border:1px solid var(--ink);
+  transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease}
+.boton:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-2px)}
+
+/* ---- contacto ---- */
+.enlaces{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));
+  border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.enlaces a,.enlaces div{display:block;padding:1rem 1.1rem;border-right:1px solid var(--line);
+  text-decoration:none;color:var(--ink);transition:background .25s ease}
+.enlaces a:hover{background:var(--surface)}
+.enlaces a:last-child,.enlaces div:last-child{border-right:0}
+.enlaces .et{font-family:"IBM Plex Mono",monospace;font-size:.5938rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.25rem}
+.enlaces .vl{font-size:.9375rem;word-break:break-word}
+.nota{max-width:62ch;font-size:.8125rem;color:var(--muted);margin-top:1.5rem;line-height:1.55}
+.pie{margin-top:2rem;padding-top:1.1rem;border-top:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace;font-size:.625rem;color:var(--muted);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+/* ===================== MOVIMIENTO ===================== */
+.js .revelar{opacity:0;transform:translateY(16px)}
+.js .revelar.visible{opacity:1;transform:none;
+  transition:opacity .65s cubic-bezier(.22,.61,.36,1),transform .65s cubic-bezier(.22,.61,.36,1)}
+.js .escalona>*{opacity:0;transform:translateY(12px)}
+.js .escalona.visible>*{opacity:1;transform:none;
+  transition:opacity .55s cubic-bezier(.22,.61,.36,1),transform .55s cubic-bezier(.22,.61,.36,1)}
+.js .escalona.visible>*:nth-child(1){transition-delay:.04s}
+.js .escalona.visible>*:nth-child(2){transition-delay:.10s}
+.js .escalona.visible>*:nth-child(3){transition-delay:.16s}
+.js .escalona.visible>*:nth-child(4){transition-delay:.22s}
+.js .escalona.visible>*:nth-child(5){transition-delay:.28s}
+.js .escalona.visible>*:nth-child(6){transition-delay:.34s}
+.js .escalona.visible>*:nth-child(7){transition-delay:.40s}
+.js .escalona.visible>*:nth-child(8){transition-delay:.46s}
+@keyframes entrar{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.js .riel>*{animation:entrar .6s cubic-bezier(.22,.61,.36,1) backwards}
+.js .riel>*:nth-child(1){animation-delay:.05s}
+.js .riel>*:nth-child(2){animation-delay:.11s}
+.js .riel>*:nth-child(3){animation-delay:.17s}
+.js .riel>*:nth-child(4){animation-delay:.23s}
+.js .riel>*:nth-child(5){animation-delay:.29s}
+.js .riel>*:nth-child(6){animation-delay:.35s}
+.js .riel>*:nth-child(7){animation-delay:.41s}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+  .js .revelar,.js .escalona>*{opacity:1!important;transform:none!important}
+}
+</style>
+
+<script>document.documentElement.classList.add('js');</script>
+
+<div id="progreso"></div>
+
+<div class="marco">
+
+  <aside class="riel">
+    <p class="riel-rol">Analista de Sistemas<br>Analista Funcional</p>
+    <h1 class="riel-nombre">Adrián<br>Finochio</h1>
+    <p class="riel-lugar">Loncopué · Neuquén · Argentina</p>
+    <p class="riel-frase">Relevo circuitos administrativos desde adentro, haciéndolos, y dirijo su automatización.</p>
+    <nav>
+      <ul class="indice">
+        <li><a href="#perfil">Perfil</a></li>
+        <li><a href="#trayectoria">Trayectoria</a></li>
+        <li><a href="#metodo">Cómo trabajo</a></li>
+        <li><a href="#competencias">Competencias</a></li>
+        <li><a href="#sistemas">Sistemas</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <div class="riel-pie">
+      <a href="mailto:finochio.adrian@outlook.com"><span class="et">Mail</span><span>finochio.adrian@outlook.com</span></a>
+      <a href="https://www.linkedin.com/in/adrian-finochio/" target="_blank" rel="noopener"><span class="et">LinkedIn</span><span>in/adrian-finochio</span></a>
+      <a href="https://github.com/FinochioAdrian" target="_blank" rel="noopener"><span class="et">GitHub</span><span>FinochioAdrian</span></a>
+      <a href="cv/CV-Adrian-Finochio.pdf"><span class="et">CV</span><span>Descargar PDF</span></a>
+    </div>
+    <button id="tema" class="tema" type="button" title="Tema: claro, oscuro o automático">Claro</button>
+  </aside>
+
+  <main class="flujo">
+
+    <section id="perfil">
+      <div class="revelar">
+        <p class="rotulo">01 — Perfil</p>
+        <h2>Un analista adentro del proceso, no enfrente de él.</h2>
+        <div class="prosa">
+          <p>Soy <b>Analista de Sistemas</b> con título obtenido y trabajo desde 2025 como <b>administrativo contable en el Distrito Escolar VII</b> del Consejo Provincial de Educación de Neuquén. Esa posición explica el resto: no relevé el proceso desde afuera con entrevistas, lo hice desde adentro, haciéndolo. Sé cuánto tarda transcribir un CUIT mal escaneado porque lo transcribí.</p>
+          <p>Sobre ese relevamiento salieron ocho aplicaciones de escritorio que cubren el circuito de rendición de gastos, de la factura al cierre bancario. <b>El código lo producen modelos de lenguaje que yo dirijo</b>; míos son el relevamiento, las reglas de negocio, la especificación con criterios de aceptación, las decisiones de arquitectura, la validación contra el histórico real y el criterio de qué no se delega. Busco un puesto de <b>analista funcional, analista de sistemas, project manager técnico o desarrollador</b>.</p>
+        </div>
+      </div>
+      <div class="marcador escalona">
+        <div class="cifra"><b data-hasta="8">8</b><span>Sistemas puestos en funcionamiento</span></div>
+        <div class="cifra"><b>&lt;2 años</b><span>Del primero al último</span></div>
+        <div class="cifra"><b>71→9 s</b><span>Codificar una factura patrimonial</span></div>
+        <div class="cifra"><b data-hasta="1493" data-sufijo="/1493">1493/1493</b><span>Filas migradas y validadas</span></div>
+      </div>
+    </section>
+
+    <section id="trayectoria">
+      <div class="revelar">
+        <p class="rotulo">02 — Trayectoria</p>
+        <h2>Dónde estuve, y qué hice ahí.</h2>
+      </div>
+      <div class="dos">
+        <ol class="traza escalona">
+          <li class="hito actual">
+            <div class="hito-cab"><span class="hito-rol">Administrativo contable · analista funcional interno</span><span class="hito-fecha">2025 — actualidad</span></div>
+            <p class="hito-org">Distrito Escolar VII — CPE Neuquén, Loncopué</p>
+            <ul>
+              <li><b>Relevé el circuito completo de rendición de gastos</b> y documenté sus reglas de negocio, su catálogo de eventos y un modelo de datos unificado.</li>
+              <li>Especifiqué requerimientos con criterios de aceptación <b>antes</b> de construir, y dirigí la construcción de ocho aplicaciones que hoy están en uso.</li>
+              <li>Automaticé la extracción documental: OCR sin conexión, lectura del código QR de AFIP y asignación automática factura–pago–retención.</li>
+              <li>Integré con lo que ya existía en lugar de reemplazarlo, con copia de respaldo previa y vuelta atrás completa ante error.</li>
+              <li>Escribí el plan de arquitectura para unificar los ocho sistemas, con el diagnóstico medido sobre el código existente.</li>
+            </ul>
+          </li>
+          <li class="hito">
+            <div class="hito-cab"><span class="hito-rol">Docente de Informática y Ciencias Físicas</span><span class="hito-fecha">Nivel secundario</span></div>
+            <p class="hito-org">CPEM N° 10 de Loncopué — Neuquén</p>
+            <ul><li>De ahí viene lo que más uso hoy: explicarle algo técnico a alguien que no tiene por qué saberlo, y darme cuenta cuando no se entendió.</li></ul>
+          </li>
+          <li class="hito">
+            <div class="hito-cab"><span class="hito-rol">Soporte técnico y mantenimiento informático</span><span class="hito-fecha">Independiente</span></div>
+            <p class="hito-org">Loncopué y zona, Neuquén</p>
+            <ul><li>Diagnóstico y reparación de equipos, instalación de sistemas y atención directa a usuarios finales.</li></ul>
+          </li>
+        </ol>
+        <aside class="revelar">
+          <p class="rotulo">Formación</p>
+          <div class="ficha">
+            <div class="ficha-fila"><div class="t">Analista de Sistemas</div><div class="o">ISSD — Instituto Superior Santo Domingo, Córdoba</div><div class="f">Título obtenido</div></div>
+            <div class="ficha-fila"><div class="t">Desarrollador Full Stack</div><div class="o">Coderhouse</div><div class="f">Formación completa</div></div>
+            <div class="ficha-fila"><div class="t">Oracle Next Education (ONE)</div><div class="o">Alura Latam / Oracle — Front-end</div></div>
+            <div class="ficha-fila"><div class="t">UX Design</div><div class="o">Alura Latam</div><div class="f">Curso · 2022</div></div>
+          </div>
+          <p class="rotulo" style="margin-top:1.75rem">Idiomas y disponibilidad</p>
+          <div class="ficha">
+            <div class="ficha-fila"><div class="t">Español</div><div class="o">Nativo</div></div>
+            <div class="ficha-fila"><div class="t">Inglés</div><div class="o">Técnico — lectura de documentación</div></div>
+            <div class="ficha-fila"><div class="t">Modalidad</div><div class="o">Remoto o con relocación</div></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="metodo">
+      <div class="revelar">
+        <p class="rotulo">03 — Cómo trabajo</p>
+        <h2>Qué aporto yo y qué produce el modelo.</h2>
+        <p class="bajada">Ocho sistemas en menos de dos años, hechos por una sola persona con otro trabajo a tiempo completo, sólo se explican de una manera. Prefiero explicarla yo antes de que la pregunten.</p>
+      </div>
+      <div class="reparto revelar">
+        <div class="mitad yo">
+          <p class="mitad-t">Lo que aporto yo</p>
+          <ul>
+            <li>Relevamiento del proceso desde adentro, haciéndolo todos los días</li>
+            <li>Reglas de negocio: qué retención aplica, con qué base, con qué mínimo</li>
+            <li>Especificación con alcance, criterios de aceptación y restricciones</li>
+            <li>Decisiones de arquitectura, con su alternativa descartada y el porqué</li>
+            <li>Diseño de la validación: contra qué histórico real se prueba</li>
+            <li>Revisión de cada salida y la decisión de qué se descarta</li>
+            <li>El límite: qué no se le delega nunca a un modelo</li>
+          </ul>
+        </div>
+        <div class="mitad ia">
+          <p class="mitad-t">Lo que produce el modelo bajo esa dirección</p>
+          <ul>
+            <li>La implementación en código de lo especificado</li>
+            <li>Los tests que la especificación pide</li>
+            <li>Refactors acotados, con los tests en verde como condición</li>
+            <li>Documentación técnica a partir del código existente</li>
+            <li>Exploración de alternativas que después evalúo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="competencias">
+      <div class="revelar">
+        <p class="rotulo">04 — Competencias</p>
+        <h2>Stack y dominio.</h2>
+      </div>
+      <dl class="comp escalona">
+        <div><dt>Lenguajes</dt><dd>TypeScript · JavaScript · Python · SQL · PHP · Java · HTML5 · CSS3</dd></div>
+        <div><dt>Frontend</dt><dd>React 18 y 19 · Vite · Tailwind CSS · diseño responsive y accesible</dd></div>
+        <div><dt>Backend y API</dt><dd>Node.js · Express · API REST · Swagger / OpenAPI · autenticación y sesiones</dd></div>
+        <div><dt>Escritorio</dt><dd>Electron · electron-vite · instaladores NSIS con firma de código · IPC tipado</dd></div>
+        <div><dt>Datos</dt><dd>SQLite · Drizzle ORM · MongoDB · Supabase · migraciones versionadas · claves naturales</dd></div>
+        <div><dt>Automatización</dt><dd>OCR con Tesseract · pdfjs · pdf-lib · docxtemplater · ExcelJS · COM sobre Excel · Playwright</dd></div>
+        <div><dt>IA aplicada</dt><dd>NVIDIA NIM · Model Context Protocol · orquestación multi-agente · backtesting y guardas</dd></div>
+        <div><dt>Calidad</dt><dd>Jest · Vitest · supertest · fast-check · TDD · golden-master</dd></div>
+        <div><dt>Análisis funcional</dt><dd>Relevamiento · elicitación de requerimientos · reglas de negocio · casos de uso · modelado de datos</dd></div>
+        <div><dt>Dominio</dt><dd>Administración pública · rendición de gastos · retenciones IIBB, SUSS y Ganancias · comprobantes AFIP · conciliación bancaria</dd></div>
+      </dl>
+    </section>
+
+    <section id="sistemas">
+      <div class="revelar">
+        <p class="rotulo">05 — Los sistemas</p>
+        <h2>Ocho aplicaciones en uso.</h2>
+        <p class="bajada">Desarrollos propios dentro del organismo donde trabajo. Acá van nombrados; el detalle de cada uno —qué resuelve, casos de uso, medidas y capturas— está en Ice Fox Design.</p>
+      </div>
+      <div class="lista-sis escalona">
+        <div class="fila"><span class="nom">Conciliación Bancaria</span><span class="que">Cierre bancario completo: importación, vínculos N:M, sugerencias explicadas e informes oficiales</span><span class="est ok">En uso · v1.76</span></div>
+        <div class="fila"><span class="nom">GFPN — Gestor de Comprobantes</span><span class="que">Preparación y registro de la documentación de respaldo, con división de PDF por actuación mediante OCR</span><span class="est ok">En uso · v2.5.8</span></div>
+        <div class="fila"><span class="nom">Planillas de Retenciones</span><span class="que">Retenciones de Ingresos Brutos, SUSS y Ganancias, de la factura al certificado</span><span class="est ok">En uso · v1.4.12</span></div>
+        <div class="fila"><span class="nom">FPG — Carga de Facturas</span><span class="que">Registro de facturas en el libro contable, con OCR, código QR de AFIP y asignación automática</span><span class="est ok">En uso · v2.13</span></div>
+        <div class="fila"><span class="nom">Planillas de Bienes de Capital</span><span class="que">Planillas patrimoniales en Word, sobre un nomenclador de 1996 digitalizado por OCR</span><span class="est piloto">Piloto · v0.9.1</span></div>
+        <div class="fila"><span class="nom">Compras Distrito VII</span><span class="que">Circuito de compras escolares, de la nota al remito, con usuarios y permisos</span><span class="est base">Plataforma base</span></div>
+        <div class="fila"><span class="nom">SADIC Neuquén</span><span class="que">Reescritura formal del libro contable a base de datos, con auditoría y reglas testeadas</span><span class="est base">Fase 0 completa</span></div>
+        <div class="fila"><span class="nom">Automatización de Comprobantes</span><span class="que">Copia local de partidas y comprobantes del ejercicio, con sincronización bidireccional</span><span class="est base">v1.4</span></div>
+      </div>
+      <div class="revelar"><a class="boton" href="https://icefoxdesing.github.io/">Ver los sistemas en detalle →</a></div>
+    </section>
+
+    <section id="contacto">
+      <div class="revelar">
+        <p class="rotulo">06 — Contacto</p>
+        <h2>Disponible para analista funcional, analista de sistemas y desarrollo.</h2>
+        <p class="bajada">Remoto o con relocación. Puedo mostrar cualquiera de los sistemas funcionando en una entrevista técnica, con datos de prueba.</p>
+      </div>
+      <div class="enlaces escalona">
+        <a href="mailto:finochio.adrian@outlook.com"><span class="et">Email</span><span class="vl">finochio.adrian@outlook.com</span></a>
+        <a href="https://www.linkedin.com/in/adrian-finochio/" target="_blank" rel="noopener"><span class="et">LinkedIn</span><span class="vl">in/adrian-finochio</span></a>
+        <a href="https://github.com/FinochioAdrian" target="_blank" rel="noopener"><span class="et">GitHub</span><span class="vl">FinochioAdrian</span></a>
+        <a href="cv/CV-Adrian-Finochio.pdf"><span class="et">Currículum</span><span class="vl">Descargar PDF</span></a>
+        <div><span class="et">Teléfono</span><span class="vl">+54 299 471-2095<br>+54 2942 561208</span></div>
+      </div>
+      <p class="nota">Los repositorios de estos sistemas son privados: operan sobre datos fiscales y personales de terceros dentro de un organismo público. Todo lo que se muestra acá está tomado con datos de prueba o son métricas del código propio.</p>
+      <div class="pie"><span>Adrián Finochio · Analista de Sistemas</span><span>Actualizado en septiembre de 2026</span></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var raiz = document.documentElement;
+  var reducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- tema: arranca en claro ---------- */
+  var b = document.getElementById('tema');
+  var clave = 'tema-preferido', estados = ['light','dark','auto'];
+  var etiqueta = { light:'Claro', dark:'Oscuro', auto:'Automático' };
+  var actual = 'light';
+  try { var g = localStorage.getItem(clave); if (estados.indexOf(g) >= 0) actual = g; } catch (e) {}
+  function aplicarTema(){
+    if (actual === 'auto') raiz.removeAttribute('data-theme');
+    else raiz.setAttribute('data-theme', actual);
+    b.textContent = etiqueta[actual];
+    b.setAttribute('aria-label', 'Tema ' + etiqueta[actual].toLowerCase() + '. Cambiar.');
+  }
+  aplicarTema();
+  b.addEventListener('click', function(){
+    actual = estados[(estados.indexOf(actual) + 1) % estados.length];
+    try { localStorage.setItem(clave, actual); } catch (e) {}
+    aplicarTema();
+  });
+
+  /* ---------- revelado al entrar ---------- */
+  var piezas = document.querySelectorAll('.revelar, .escalona');
+  function mostrarTodo(){ for (var i=0;i<piezas.length;i++) piezas[i].classList.add('visible'); }
+  if (reducido || !('IntersectionObserver' in window)) {
+    mostrarTodo();
+  } else {
+    var obs = new IntersectionObserver(function(entradas){
+      entradas.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    for (var i=0;i<piezas.length;i++) obs.observe(piezas[i]);
+    setTimeout(mostrarTodo, 2500);   /* red de seguridad */
+  }
+
+  /* ---------- cifras que cuentan ---------- */
+  var cifras = document.querySelectorAll('.cifra b[data-hasta]');
+  function contar(el){
+    var fin = parseInt(el.getAttribute('data-hasta'), 10);
+    var suf = el.getAttribute('data-sufijo') || '';
+    if (reducido) { el.textContent = fin + suf; return; }
+    var ini = null, dur = 900;
+    function paso(t){
+      if (ini === null) ini = t;
+      var p = Math.min((t - ini) / dur, 1);
+      var suave = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(fin * suave) + suf;
+      if (p < 1) requestAnimationFrame(paso);
+    }
+    requestAnimationFrame(paso);
+  }
+  if ('IntersectionObserver' in window) {
+    var obsC = new IntersectionObserver(function(en){
+      en.forEach(function(e){ if (e.isIntersecting) { contar(e.target); obsC.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    for (var j=0;j<cifras.length;j++) obsC.observe(cifras[j]);
+  }
+
+  /* ---------- índice activo + barra de progreso ---------- */
+  var secciones = [].slice.call(document.querySelectorAll('.flujo section'));
+  var enlaces = [].slice.call(document.querySelectorAll('.indice a'));
+  var barra = document.getElementById('progreso');
+  function alScroll(){
+    var y = window.scrollY || document.documentElement.scrollTop;
+    var alto = document.documentElement.scrollHeight - window.innerHeight;
+    barra.style.width = (alto > 0 ? (y / alto) * 100 : 0) + '%';
+    var activa = secciones[0];
+    for (var i=0;i<secciones.length;i++){
+      if (secciones[i].getBoundingClientRect().top <= window.innerHeight * 0.34) activa = secciones[i];
+    }
+    enlaces.forEach(function(a){
+      a.classList.toggle('activo', a.getAttribute('href') === '#' + activa.id);
+    });
+  }
+  var pendiente = false;
+  window.addEventListener('scroll', function(){
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(function(){ alScroll(); pendiente = false; });
+  }, { passive: true });
+  alScroll();
+})();
+</script>
+
+</body>
+</html>

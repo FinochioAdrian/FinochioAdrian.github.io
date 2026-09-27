@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las ocho aplicaciones — Adrián Finochio</title>
+<meta name="description" content="Catálogo de los ocho sistemas de administración construidos para el Distrito Escolar VII: casos de uso, estado de desarrollo, medidas y stack.">
+<meta name="author" content="Adrián Finochio">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="barra">
+  <div class="env">
+    <span class="marca">Adrián Finochio</span>
+    <nav>
+      <a href="index.html#perfil">Perfil</a>
+      <a href="index.html#circuito">El circuito</a>
+      <a href="aplicaciones.html" aria-current="page">Aplicaciones</a>
+      <a href="index.html#metodo">Método</a>
+      <a href="index.html#contacto">Contacto</a>
+    </nav>
+    <button id="tema" class="tema" type="button" title="Tema: automático, claro u oscuro">AUTO</button>
+  </div>
+</div>
+<script>
+(function(){
+  var b = document.getElementById('tema');
+  if (!b) return;
+  var raiz = document.documentElement, clave = 'tema-preferido';
+  var estados = ['auto','light','dark'];
+  var etiqueta = { auto:'AUTO', light:'CLARO', dark:'OSCURO' };
+  var actual = 'auto';
+  try { var g = localStorage.getItem(clave); if (estados.indexOf(g) >= 0) actual = g; } catch (e) {}
+  function aplicar(){
+    if (actual === 'auto') raiz.removeAttribute('data-theme');
+    else raiz.setAttribute('data-theme', actual);
+    b.textContent = etiqueta[actual];
+    b.setAttribute('aria-label', 'Tema actual: ' + etiqueta[actual].toLowerCase() + '. Cambiar.');
+  }
+  aplicar();
+  b.addEventListener('click', function(){
+    actual = estados[(estados.indexOf(actual) + 1) % estados.length];
+    try { localStorage.setItem(clave, actual); } catch (e) {}
+    aplicar();
+  });
+})();
+</script>
+
+
+<header class="cab-pagina">
+  <div class="env">
+    <p class="folio"><span>Adrián Finochio</span><span class="sep">/</span><span>Sistemas propios en uso</span></p>
+    <h1>Las ocho aplicaciones</h1>
+    <p class="bajada">Desarrollos propios en uso o en piloto dentro del organismo donde trabajo, construidos bajo mi dirección con desarrollo asistido por IA. Cada ficha indica qué resuelve, para qué se usa, en qué estado está y con qué está construida. Estado verificado en septiembre de 2026.</p>
+  </div>
+</header>
+
+<section id="sistemas">
+  <div class="env">
+
+    <div class="filtros" role="group" aria-label="Filtrar sistemas por estado">
+      <button class="filtro" data-f="todos" aria-pressed="true">Todos</button>
+      <button class="filtro" data-f="prod" aria-pressed="false">En producción</button>
+      <button class="filtro" data-f="piloto" aria-pressed="false">Piloto</button>
+      <button class="filtro" data-f="plan" aria-pressed="false">Base / fase completa</button>
+    </div>
+
+    <div class="sistemas">
+
+      <article class="sistema e-prod" data-e="prod">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">Conciliación Bancaria</span><span class="estado prod">En uso · v1.76.0</span></div>
+          <p class="sis-que">El cierre bancario del mes se hacía a mano en Excel: dos hojas abiertas, coincidencias marcadas con colores, el informe armado a pulso, sin historial ni trazabilidad. Unas tres horas por mes, y cada error solo aparecía al final. Hoy es una aplicación de escritorio que <b>baja ese cierre a menos de media hora</b>, sobre entre 150 y 500 movimientos mensuales.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Importar el libro banco desde Excel y el extracto desde CSV, Excel o PDF, y verlos en paneles lado a lado, redimensionables o en ventanas aparte.</li>
+            <li>Asociar movimientos uno a uno, uno a varios, varios a uno y varios con varios, con control de sentido y sin dejar nada usado dos veces.</li>
+            <li>Recibir sugerencias de un motor determinístico de asignación óptima que <b>explica cada propuesta</b> por las señales que la sostienen — y explica también por qué no encuentra, cuando no encuentra.</li>
+            <li>Arrastrar lo que queda pendiente al mes siguiente y resolverlo contra su contrapartida.</li>
+            <li>Ver la diferencia explicada en tiempo real por partida, con el saldo inicial y el arrastre, en lugar de un número suelto que no se sabe de dónde sale.</li>
+            <li>Emitir el informe de conciliación, la prueba de caja, el formulario oficial y el balance, y exportarlos a PDF y Excel.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">~38.000 líneas</span><span class="medida">2.897 casos de prueba</span><span class="medida">90 historias de usuario</span><span class="medida">132 commits</span><span class="medida">~3 h → &lt;30 min</span></div>
+          <p class="stack">Electron 44 · React 18 · TypeScript · base SQLite local · interfaz estilo editor de código · tablas virtualizadas · parsers Excel, CSV y PDF · ExcelJS · pdfjs · Vitest · Playwright · Testing Library · actualización automática</p>
+          <div class="nota-ficha"><p class="nf-a">Es el sistema que más dice sobre cómo trabajo, porque empezó siendo el peor. La primera versión cargaba bien los datos y conciliaba mal: usaba una sola señal —el importe—, ignoraba el destinatario y el CBU que ella misma guardaba, era voraz en lugar de óptima, sólo admitía vínculos uno a uno y no explicaba nada. Lo audité, escribí las cinco causas, y la conclusión fue descartar el motor entero en lugar de parcharlo.</p><p class="nf-b">Lo que vino después se construyó con especificación previa, historias de usuario numeradas y tests antes del código. En el camino se endureció la seguridad de la aplicación y se actualizó el runtime dos versiones mayores. El diagnóstico sigue escrito: no lo borré, es parte del historial.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-prod" data-e="prod">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">GFPN — Gestor de Comprobantes</span><span class="estado prod">En uso · v2.5.8</span></div>
+          <p class="sis-que">Automatiza el ciclo de preparación y registro de la documentación de respaldo de una rendición. Lo que más lo distingue: parte un único PDF escaneado con N actuaciones en un PDF por factura, identificando por OCR la carátula, la nota de pedido, la factura, el certificado de retención y el comprobante de transferencia, y rearmando cada salida con los documentos comunes de su actuación.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Cerrar una rendición mensual: listar los comprobantes a los que les falta el archivo, preparar las carpetas, escanear todo el lote en un PDF, dividirlo, distribuirlo y registrarlo.</li>
+            <li>Corregir un lote mal cargado exportando a JSON, editando en masa y aplicando con vista previa de diferencias.</li>
+            <li>Generar en un paso todas las notas de pedido del período desde la planilla de gastos.</li>
+            <li>Localizar comprobantes traspapelados recorriendo un rango de partidas del ejercicio.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">~17.700 líneas</span><span class="medida">282 casos de prueba</span><span class="medida">23 instaladores</span><span class="medida">11 vistas · 9 opciones CLI</span></div>
+          <p class="stack">Electron · Node.js ESM · Tesseract.js · pdf-lib · pdf-poppler · docxtemplater · Axios · Jest + fast-check · electron-builder NSIS</p>
+          <div class="nota-ficha"><p class="nf-a">Sin captura publicable: la aplicación opera sobre comprobantes reales de proveedores. Se puede mostrar en vivo en una entrevista.</p><p class="nf-b">Regla de nomenclatura con truncamiento en cascada para el límite de 50 caracteres del sistema de destino, verificada con testing basado en propiedades.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-prod" data-e="prod">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">Planillas de Retenciones</span><span class="estado prod">En uso · v1.4.12</span></div>
+          <p class="sis-que">Circuito integral de retenciones de Ingresos Brutos, SUSS y Ganancias, de la factura al certificado. El motor de extracción no busca un patrón: genera candidatos por campo con puntaje y vota. Y aprende: si el usuario corrige un campo, el patrón que lo extrajo se penaliza; si no lo corrige, se refuerza.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Arrastrar los PDFs del mes, revisar solo los campos con baja confianza y emitir la planilla con código correlativo.</li>
+            <li>Cargar la planilla aprobada por contaduría: el sistema la clasifica, cruza las líneas y actualiza estados y fechas.</li>
+            <li>Emitir el certificado de retención en PDF sobre la plantilla vigente del organismo.</li>
+            <li>Trabajar desde dos puestos a la vez sin colisión de numeración, y sincronizar cuando hay red.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">~17.200 líneas</span><span class="medida">189 tests Jest</span><span class="medida">15 servicios · ~60 endpoints</span><span class="medida">13 releases firmados</span></div>
+          <p class="stack">Electron + electron-vite · React 18 · TypeScript · Express embebido · SQLite WAL (better-sqlite3) · Supabase · Tailwind · pdfjs + Tesseract · pdf-lib · ExcelJS · Jest + supertest</p>
+          <div class="nota-ficha"><p class="nf-a">Sin captura publicable: la pantalla muestra CUIT, razón social e importes de proveedores reales.</p><p class="nf-b">Cada campo extraído guarda su confianza de 0 a 100 y su origen — digital, OCR o manual — para que la revisión se concentre donde hace falta.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-prod" data-e="prod">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">FPG — Carga de Facturas</span><span class="estado prod">En uso · v2.13.0</span></div>
+          <p class="sis-que">Convierte la rendición mensual en tres pasos: extracto bancario, documentos, carga. Se sueltan todos los PDFs juntos —facturas, retenciones y comprobantes de pago— y el sistema los clasifica, hace OCR, decodifica el QR de AFIP y los asigna a la actuación correcta formando el trinomio pago ↔ factura ↔ retención. Funciona 100 % sin internet.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Generar una actuación por cada transferencia del extracto y ver el tablero de progreso en vivo: completas, falta retención, sin factura.</li>
+            <li>Cargar todo al libro contable en una sola transacción, con backup previo, validación de catálogos y rollback total ante error.</li>
+            <li>Detectar duplicados cruzando el número de comprobante contra lo ya cargado.</li>
+            <li>Exportar el reporte de conciliación movimiento ↔ actuación ↔ saldo.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">69 tests de regresión</span><span class="medida">100 % offline</span><span class="medida">Backup de los últimos 20 libros</span><span class="medida">92,7 % imputación aprendida</span></div>
+          <p class="stack">Electron · Tesseract.js con modelo español empaquetado · pdfjs-dist · @napi-rs/canvas · jsQR · SheetJS · automatización de Excel por COM (PowerShell) · Playwright</p>
+          <div class="nota-ficha"><p class="nf-a">Sin captura publicable: la aplicación trabaja sobre el libro contable oficial del distrito.</p><p class="nf-b">Preprocesado de imagen con binarización de Otsu, denoise y deskew, en dos pasadas de 200 y 300 DPI, antes de pasar por OCR.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-piloto con-imagen" data-e="piloto">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">Planillas de Bienes de Capital</span><span class="estado piloto">Piloto en uso · v0.9.1</span></div>
+          <p class="sis-que">El nomenclador patrimonial oficial es una fotocopia de 1996: 69 páginas escaneadas sin capa de texto. El sistema lo digitalizó en 2.142 registros con OCR de tres pasadas a distinta resolución y voto celda por celda, y hoy sugiere el código de cada bien, audita la certeza de la sugerencia y genera la planilla en Word con numeración correlativa garantizada.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Arrastrar la factura de compra: se extraen los ítems, se proponen los códigos y se emite el documento numerado.</li>
+            <li>Repartir una compra entre varias escuelas, con un documento por destino y correlativos distintos.</li>
+            <li>Importar el listado mensual de facturas desde Excel y emitir todas las planillas por lote, controlando la suma de ítems contra el importe declarado.</li>
+            <li>Revisar solo las filas del nomenclador donde las pasadas de OCR no coincidieron.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">2.142 registros digitalizados</span><span class="medida">427 verificaciones</span><span class="medida">56 escuelas</span><span class="medida">71 s → 9 s por factura</span></div>
+          <p class="stack">Electron 44 · docxtemplater + PizZip · pdfjs-dist · sharp (TIFF CCITT G4) · Fuse.js · NVIDIA NIM · ExcelJS · escritura atómica temp+rename · instalador NSIS</p>
+        </div>
+        <figure class="sis-figura">
+          <div class="tiras">
+            <img src="img/planillas-bienes-capital.webp" alt="Pantalla de planillas: zona para arrastrar una factura, carga por lote desde Excel y tablero de borradores por estado.">
+            <img src="img/nomenclador-digitalizado.webp" alt="Pantalla del nomenclador: 465 ítems, 540 marcas, 100 materiales, 28 colores y 998 dependencias, con las filas marcadas para revisar.">
+          </div>
+          <img src="img/cruce-nomenclador.webp" alt="Modal de cruce de escuelas contra el nomenclador, con la propuesta de código y el nivel de confianza por fila.">
+          <figcaption>Capturas reales con datos de prueba. Arriba: inicio de planilla y nomenclador digitalizado, con el contador de filas pendientes de revisión. Abajo: el cruce contra el nomenclador de 1996 — 32 de 56 escuelas tienen par; nada se guarda hasta confirmar.</figcaption>
+        </figure>
+      </article>
+
+      <article class="sistema e-plan" data-e="plan">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">SADIC Neuquén — Auditoría de Distritos y Control</span><span class="estado plan">Fase 0 completa</span></div>
+          <p class="sis-que">Reescritura formal del libro contable a base de datos: reglas de dominio puras y testeadas, política append-only, bitácora de auditoría y desbloqueo por clave de supervisor. La migración del ejercicio completo reprodujo <b>1.493 de 1.493 filas</b> del histórico recalculando los saldos por regla, no copiándolos — y en el camino detectó una anomalía real del Excel de origen en lugar de replicarla.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Migrar el ejercicio contable desde la planilla a base de datos, validando fila por fila contra el histórico.</li>
+            <li>Detectar descalces: movimientos huérfanos, actuaciones sin movimiento, importes que no coinciden, factura clase B sin retención.</li>
+            <li>Auditar quién cambió qué campo y cuándo, con registros no editables salvo desbloqueo supervisado.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">4 paquetes</span><span class="medida">34 tests verdes</span><span class="medida">14 tablas · 8 índices</span><span class="medida">1493/1493 golden-master</span></div>
+          <p class="stack">Monorepo npm workspaces · TypeScript estricto (noUncheckedIndexedAccess) · SQLite WASM · migraciones versionadas · Electron 31 + electron-vite · React 18 · Vitest</p>
+          <div class="nota-ficha"><p class="nf-a">Fase de cimientos: dominio, base de datos y shell de escritorio. Las pantallas de actuaciones y libro banco son la fase siguiente.</p><p class="nf-b">La decisión de arquitectura está escrita: SQLite WASM en lugar del binario nativo, porque la máquina de trabajo no tiene toolchain de C++ y así se evita el rebuild de Electron.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-plan" data-e="plan">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">Compras Distrito VII</span><span class="estado plan">Plataforma base · v0.1.0</span></div>
+          <p class="sis-que">Circuito completo de compras escolares —nota, orden, cotización, factura, pago, envío y remito— y, sobre todo, la plataforma que el resto va a heredar: usuarios y permisos atómicos, roles como paquetes de permisos con overrides por usuario, sincronización campo a campo con lista blanca, adjuntos por hash, papelera e historial por campo.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Seguir una compra escolar desde el pedido de la escuela hasta el remito firmado.</li>
+            <li>Emitir remitos y etiquetas con QR, con numeración correlativa y alfabeto sin caracteres ambiguos.</li>
+            <li>Dar a un encargado de sector acceso solo a su sector, sin necesidad de un programa aparte.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">20 tablas de plataforma</span><span class="medida">11 permisos atómicos</span><span class="medida">Sync con conflictos</span></div>
+          <p class="stack">Electron · React · TypeScript · Drizzle ORM + @libsql/client · exportación unificada a CSV, Excel y PDF · protocolo propio para adjuntos</p>
+          <div class="nota-ficha"><p class="nf-a">Sin captura publicable: contiene proveedores, escuelas y montos reales del distrito.</p><p class="nf-b">Es la base elegida para la unificación porque ya resuelve lo aburrido y crítico: quién puede hacer qué, qué cambió, y cómo se exporta.</p></div>
+        </div>
+      </article>
+
+      <article class="sistema e-plan" data-e="plan">
+        <div class="sis-cuerpo">
+          <div class="sis-cab"><span class="sis-nom">Automatización de Comprobantes</span><span class="estado plan">v1.4</span></div>
+          <p class="sis-que">Aplicación cliente-servidor para la gestión de comprobantes del ejercicio: opera con la sesión del propio usuario en el sistema de registro contable del organismo, mantiene una copia local de partidas y comprobantes, y sincroniza en las dos direcciones con detección y resolución manual de conflictos. Es el proyecto donde más lejos llevé la orquestación multi-agente: seis perfiles de trabajo y servidores MCP conectados al entorno de desarrollo.</p>
+          <p class="sis-sub">Casos de uso</p>
+          <ul class="usos">
+            <li>Traer las partidas del ejercicio y sus comprobantes a una copia local y trabajarlos sin depender de la conexión.</li>
+            <li>Resolver a mano los conflictos cuando el mismo comprobante cambió de los dos lados.</li>
+            <li>Calcular retenciones y gestionar los archivos digitalizados asociados a cada comprobante.</li>
+          </ul>
+          <p class="sis-sub">Medidas</p>
+          <div class="medidas"><span class="medida">5 modelos de datos</span><span class="medida">API documentada con Swagger</span><span class="medida">6 perfiles de agente</span></div>
+          <p class="stack">Node.js + Express + TypeScript · MongoDB + Mongoose · React 19 + Vite + Tailwind · Axios · Swagger / OpenAPI · Electron · Jest</p>
+          <div class="nota-ficha"><p class="nf-a">Sin captura publicable: la interfaz opera con la sesión y los datos reales del organismo.</p><p class="nf-b">La especificación del proyecto lista funcionalidades implementadas y pendientes por separado, con criterios de aceptación numerados — se escribió antes de codificar.</p></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="contacto">
+  <div class="env">
+    <p class="rotulo">06 — Contacto</p>
+    <h2>Disponible para analista funcional, analista de sistemas y desarrollo.</h2>
+    <p class="bajada">Remoto o con relocación. Puedo mostrar cualquiera de los sistemas funcionando en una entrevista técnica, con datos de prueba.</p>
+    <div class="enlaces">
+      <a href="mailto:finochio.adrian@outlook.com"><span class="et">Email</span><span class="vl">finochio.adrian@outlook.com</span></a>
+      <a href="https://www.linkedin.com/in/adrian-finochio/" target="_blank" rel="noopener"><span class="et">LinkedIn</span><span class="vl">in/adrian-finochio</span></a>
+      <a href="https://github.com/FinochioAdrian" target="_blank" rel="noopener"><span class="et">GitHub</span><span class="vl">FinochioAdrian</span></a>
+      <a href="cv/CV-Adrian-Finochio.pdf"><span class="et">Currículum</span><span class="vl">Descargar PDF</span></a>
+      <div><span class="et">Teléfono</span><span class="vl">+54 299 471-2095<br>+54 2942 561208</span></div>
+      <div><span class="et">Ubicación</span><span class="vl">Loncopué, Neuquén<br>Argentina</span></div>
+    </div>
+    <p class="nota-priv">Los repositorios de estos sistemas son privados: operan sobre datos fiscales y personales de terceros dentro de un organismo público. Todo lo que se muestra en esta página está tomado con datos de prueba o son métricas del código propio. En una entrevista puedo mostrar el código y las aplicaciones en vivo.</p>
+    <div class="pie">
+      <span>Adrián Finochio · Analista de Sistemas</span>
+      <span>Actualizado en septiembre de 2026</span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var botones = document.querySelectorAll('.filtro');
+  var fichas = document.querySelectorAll('.sistema');
+  botones.forEach(function(b){
+    b.addEventListener('click', function(){
+      botones.forEach(function(o){ o.setAttribute('aria-pressed', String(o === b)); });
+      var f = b.dataset.f;
+      fichas.forEach(function(c){
+        c.hidden = !(f === 'todos' || c.dataset.e === f);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
